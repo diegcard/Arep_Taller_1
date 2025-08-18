@@ -20,9 +20,8 @@ import java.util.logging.Logger;
 
 /**
  * HTTP Server that handles multiple sequential requests and serves static
- * files.
- * Supports HTML, CSS, JavaScript, images, and simple REST API endpoints.
- * 
+ * files. Supports HTML, CSS, JavaScript, images, and simple REST API endpoints.
+ *
  * @author Diego Cardenas
  * @version 1.0
  */
@@ -37,8 +36,8 @@ public class HttpServer {
     private static final Map<String, byte[]> fileCache = new HashMap<>();
 
     /**
-     * The entry point of the application.
-     * Initializes an instance of {@link HttpServer} and starts the server.
+     * The entry point of the application. Initializes an instance of
+     * {@link HttpServer} and starts the server.
      *
      * @param args Command-line arguments (not used).
      * @throws IOException if an I/O error occurs when starting the server.
@@ -51,19 +50,18 @@ public class HttpServer {
     /**
      * Starts the HTTP server and listens for incoming client connections.
      * <p>
-     * The server binds to the specified port and serves files from the configured
-     * web root directory.
-     * It logs server status and connection information. For each client connection,
-     * it delegates
-     * request handling to the {@code handleRequest(Socket clientSocket)} method.
+     * The server binds to the specified port and serves files from the
+     * configured web root directory. It logs server status and connection
+     * information. For each client connection, it delegates request handling to
+     * the {@code handleRequest(Socket clientSocket)} method.
      * <p>
-     * The server runs in a loop while {@code running} is {@code true}. If an error
-     * occurs while
-     * accepting or handling a client connection, it logs the error. When the server
-     * is stopped,
-     * it logs the shutdown and calls {@code stop()} to perform cleanup.
+     * The server runs in a loop while {@code running} is {@code true}. If an
+     * error occurs while accepting or handling a client connection, it logs the
+     * error. When the server is stopped, it logs the shutdown and calls
+     * {@code stop()} to perform cleanup.
      *
-     * @throws IOException if an I/O error occurs when opening the server socket.
+     * @throws IOException if an I/O error occurs when opening the server
+     *                     socket.
      */
     public void start() throws IOException {
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
@@ -81,7 +79,7 @@ public class HttpServer {
                 }
             }
         } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "❌ Could not start server on port: {0}", PORT);
+            LOGGER.log(Level.SEVERE, "Could not start server on port: {0}", PORT);
             LOGGER.log(Level.SEVERE, "Error: {0}", e.getMessage());
         } finally {
             LOGGER.log(Level.INFO, "Server stopped.");
@@ -90,8 +88,8 @@ public class HttpServer {
     }
 
     /**
-     * Stops the HTTP server by setting the running flag to false.
-     * This method should be called to gracefully shut down the server loop.
+     * Stops the HTTP server by setting the running flag to false. This method
+     * should be called to gracefully shut down the server loop.
      */
     private void stop() {
         running = false;
@@ -100,8 +98,8 @@ public class HttpServer {
     /**
      * Handles an incoming HTTP request from a client socket.
      * <p>
-     * Reads the request line and headers, logs the request, and determines how to
-     * process it:
+     * Reads the request line and headers, logs the request, and determines how
+     * to process it:
      * <ul>
      * <li>If the path starts with "/api/", delegates to
      * {@code handleApiRequest}.</li>
@@ -153,16 +151,15 @@ public class HttpServer {
     }
 
     /**
-     * Handles API requests by determining the endpoint from the path and generating
-     * the appropriate response.
-     * Supports the following endpoints:
+     * Handles API requests by determining the endpoint from the path and
+     * generating the appropriate response. Supports the following endpoints:
      * <ul>
      * <li><b>/api/weather</b>: Returns weather information in JSON format.</li>
      * <li><b>/api/quote</b>: Returns a random quote in JSON format.</li>
      * <li><b>/api/hello</b>: Returns a greeting message in JSON format.</li>
      * </ul>
-     * If the endpoint is not found, sends a 404 error response.
-     * In case of internal errors, sends a 500 error response.
+     * If the endpoint is not found, sends a 404 error response. In case of
+     * internal errors, sends a 500 error response.
      *
      * @param out    the OutputStream to write the response to
      * @param method the HTTP method of the request (e.g., GET, POST)
@@ -180,8 +177,10 @@ public class HttpServer {
                 response = getRandomQuote();
             } else if (path.startsWith("/api/hello")) {
                 switch (method) {
-                    case "GET" -> response = handleHelloServiceGet(path);
-                    case "POST" -> response = handleHelloServicePost(path);
+                    case "GET" ->
+                        response = handleHelloServiceGet(path);
+                    case "POST" ->
+                        response = handleHelloServicePost(path);
                     default -> {
                         sendErrorResponse(out, 405, "Method Not Allowed");
                         return;
@@ -232,11 +231,11 @@ public class HttpServer {
      * Generates a random inspirational quote in JSON format.
      * <p>
      * The quote consists of a content, author, current timestamp, and a fixed
-     * message.
-     * If the selected quote does not specify an author, "Anónimo" is used as the
-     * default.
+     * message. If the selected quote does not specify an author, "Anónimo" is
+     * used as the default.
      *
-     * @return a JSON string containing the quote, author, timestamp, and message.
+     * @return a JSON string containing the quote, author, timestamp, and
+     *         message.
      */
     private String getRandomQuote() {
         String[] quotes = {
@@ -311,19 +310,16 @@ public class HttpServer {
      * Serves a static file to the client.
      * <p>
      * The method sanitizes the requested path to prevent directory traversal
-     * attacks,
-     * constructs the full file path, and checks if the file exists. If the file is
-     * found,
-     * it reads its content (using a cache for files smaller than 1MB) and sends it
-     * to the client
-     * with the appropriate MIME type. If the file is not found or an error occurs,
-     * it sends
-     * an appropriate HTTP error response.
+     * attacks, constructs the full file path, and checks if the file exists. If
+     * the file is found, it reads its content (using a cache for files smaller
+     * than 1MB) and sends it to the client with the appropriate MIME type. If
+     * the file is not found or an error occurs, it sends an appropriate HTTP
+     * error response.
      *
      * @param out  the OutputStream to write the response to
      * @param path the requested file path
-     * @throws IOException if an I/O error occurs while reading the file or writing
-     *                     the response
+     * @throws IOException if an I/O error occurs while reading the file or
+     *                     writing the response
      */
     private void serveFile(OutputStream out, String path) throws IOException {
         path = path.replace("..", "").replace("//", "/");
@@ -350,17 +346,17 @@ public class HttpServer {
             String mimeType = getSimpleMimeType(filePath.getFileName().toString());
             sendResponse(out, 200, mimeType, fileContent);
 
-            System.out.println("✅ Served file: " + path + " (" + fileContent.length + " bytes)");
+            LOGGER.log(Level.INFO, "Served file: {0} ({1} bytes)", new Object[] { path, fileContent.length });
 
         } catch (IOException e) {
-            System.err.println("❌ Error reading file: " + path);
+            LOGGER.log(Level.SEVERE, "Error reading file: {0}", path);
             sendErrorResponse(out, 500, "Internal Server Error");
         }
     }
 
     /**
-     * A simple method to determine the MIME type based on file extension.
-     * This method covers common file types and defaults to
+     * A simple method to determine the MIME type based on file extension. This
+     * method covers common file types and defaults to
      * "application/octet-stream".
      *
      * @param fileName The name of the file
@@ -398,11 +394,11 @@ public class HttpServer {
 
     /**
      * Sends an HTTP response to the client.
-     * 
+     *
      * @param out         the OutputStream to write the response to
      * @param statusCode  contains the HTTP status code to send (e.g., 200, 404)
-     * @param contentType the MIME type of the response content (e.g., "text/html",
-     *                    "application/json")
+     * @param contentType the MIME type of the response content (e.g.,
+     *                    "text/html", "application/json")
      * @param content     the byte array of the response body
      * @throws IOException if an I/O error occurs while writing the response
      */
@@ -426,7 +422,8 @@ public class HttpServer {
     }
 
     /**
-     * Sends an HTTP error response to the client with a formatted HTML error page.
+     * Sends an HTTP error response to the client with a formatted HTML error
+     * page.
      *
      * @param out        the OutputStream to write the response to
      * @param statusCode the HTTP status code to send (e.g., 404, 500)
@@ -460,7 +457,8 @@ public class HttpServer {
     }
 
     /**
-     * Returns the HTTP status message corresponding to the provided status code.
+     * Returns the HTTP status message corresponding to the provided status
+     * code.
      *
      * @param statusCode the HTTP status code (e.g., 200, 400, 404, 500)
      * @return the status message as a String ("OK", "Bad Request", "Not Found",
@@ -468,11 +466,16 @@ public class HttpServer {
      */
     private String getStatusMessage(int statusCode) {
         return switch (statusCode) {
-            case 200 -> "OK";
-            case 400 -> "Bad Request";
-            case 404 -> "Not Found";
-            case 500 -> "Internal Server Error";
-            default -> "Unknown";
+            case 200 ->
+                "OK";
+            case 400 ->
+                "Bad Request";
+            case 404 ->
+                "Not Found";
+            case 500 ->
+                "Internal Server Error";
+            default ->
+                "Unknown";
         };
     }
 }
