@@ -1,199 +1,147 @@
-# Servidor HTTP Distribuido - AREP Exercise
+# Servidor HTTP - AREP Taller 1
 
-## 📋 Descripción
+Un servidor web HTTP implementado desde cero en Java puro, sin frameworks externos. Soporta archivos estáticos, servicios REST y manejo de múltiples tipos MIME.
 
-Este proyecto implementa un servidor web HTTP desde cero usando únicamente Java y las librerías estándar para el manejo de red. El servidor soporta múltiples solicitudes secuenciales no concurrentes y puede servir diferentes tipos de archivos estáticos (HTML, CSS, JavaScript, imágenes) además de proveer servicios REST.
+## 🎯 Características
 
-## 🎯 Objetivos
-
-- ✅ Crear un servidor web que maneje múltiples solicitudes secuenciales
-- ✅ Servir archivos estáticos desde el disco local (HTML, CSS, JS, imágenes)
-- ✅ Implementar servicios REST para comunicación asíncrona
-- ✅ Construir una aplicación web completa para demostrar todas las funcionalidades
-- ✅ NO usar frameworks web como Spark o Spring
+- ✅ Servidor HTTP completo sin dependencias externas
+- ✅ Soporte para archivos estáticos (HTML, CSS, JS, imágenes)
+- ✅ API REST con endpoints simulados
+- ✅ Cache de archivos en memoria
+- ✅ Detección automática de tipos MIME
+- ✅ Aplicación web de demostración
 
 ## 🏗️ Arquitectura
 
-### Componentes Principales
-
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                    Cliente (Navegador)                      │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────────────┐ │
-│  │   HTML      │  │     CSS     │  │    JavaScript       │ │
-│  │ (index.html)│  │(styles.css) │  │    (app.js)        │ │
-│  └─────────────┘  └─────────────┘  └─────────────────────┘ │
-└─────────────────────────────────────────────────────────────┘
-                              │
-                              │ HTTP/1.1
-                              ▼
-┌─────────────────────────────────────────────────────────────┐
-│                    HttpServer (Puerto 35000)                │
-│  ┌─────────────────────┐  ┌─────────────────────────────┐   │
-│  │   Servidor HTTP     │  │   Servicios REST Simples   │   │
-│  │   - Archivos        │  │     - /api/hello            │   │
-│  │     estáticos       │  │     - /api/weather (mock)   │   │
-│  │   - Tipos MIME      │  │     - /api/quote (mock)     │   │
-│  │   - Cache simple    │  │                             │   │
-│  └─────────────────────┘  └─────────────────────────────┘   │
-└─────────────────────────────────────────────────────────────┘
+Cliente (Navegador)
+       │ HTTP/1.1
+       ▼
+HttpServer (Puerto 35000)
+├── Servidor de Archivos Estáticos
+│   ├── HTML, CSS, JavaScript
+│   ├── Imágenes (PNG, JPG, SVG, etc.)
+│   └── Cache en memoria
+└── API REST
+    ├── /api/hello?name={nombre}
+    ├── /api/weather
+    └── /api/quote
 ```
 
-### Clases Principales
+### Clase Principal
 
-1. **HttpServer**: Servidor HTTP principal que maneja las conexiones, enruta las peticiones, detecta tipos MIME y provee servicios REST simulados
+- **HttpServer** (`src/main/java/com/escuelaing/arep/HttpServer.java`): Servidor principal que maneja conexiones, enrutamiento, tipos MIME y servicios REST
 
-## 🚀 Instalación y Ejecución
+## 🚀 Inicio Rápido
 
 ### Prerrequisitos
 
-- Java 21 o superior
-- Maven 3.6 o superior
+- Java 21+
+- Maven 3.6+
 
-### Pasos de Instalación
+### Instalación y Ejecución
 
-1. **Clonar el repositorio**:
+1. **Clonar y compilar**:
    ```bash
-   git clone <repository-url>
-   cd exercise_1/exercise
-   ```
-
-2. **Compilar el proyecto**:
-   ```bash
+   git clone https://github.com/diegcard/Arep_Taller_1.git
+   cd Arep_Taller_1
    mvn clean compile
    ```
 
-3. **Ejecutar las pruebas**:
+2. **Ejecutar servidor**:
    ```bash
-   mvn test
-   ```
-
-4. **Empaquetar la aplicación**:
-   ```bash
-   mvn package
-   ```
-
-5. **Ejecutar el servidor**:
-   ```bash
-   # Opción 1: Usando Maven
+   # Opción recomendada
    mvn exec:java -Dexec.mainClass="com.escuelaing.arep.HttpServer"
    
-   # Opción 2: Usando Java directamente
+   # Alternativas
    java -cp target/classes com.escuelaing.arep.HttpServer
-   
-   # Opción 3: Usando el JAR compilado
    java -cp target/urlobject-1.0-SNAPSHOT.jar com.escuelaing.arep.HttpServer
    ```
 
-6. **Abrir en el navegador**:
+3. **Acceder a la aplicación**:
    ```
    http://localhost:35000
    ```
 
-## 🌐 Funcionalidades
+## 🌐 API y Funcionalidades
 
-### Servidor de Archivos Estáticos
+### Archivos Estáticos
 
-El servidor puede servir los siguientes tipos de archivos:
+Soporta múltiples tipos de archivo con detección automática de MIME:
 
-- **HTML** (text/html): Páginas web
-- **CSS** (text/css): Hojas de estilo
-- **JavaScript** (application/javascript): Scripts del cliente
-- **Imágenes**: PNG, JPG, JPEG, GIF, SVG, ICO, WebP
-- **Fuentes**: WOFF, WOFF2, TTF, EOT
-- **Otros**: PDF, ZIP, archivos de texto
+| Tipo | Extensiones | Content-Type |
+|------|-------------|--------------|
+| HTML | .html, .htm | text/html |
+| CSS | .css | text/css |
+| JavaScript | .js | application/javascript |
+| Imágenes | .png, .jpg, .gif, .svg, .ico, .webp | image/* |
+| Fuentes | .woff, .woff2, .ttf, .eot | font/* |
+| Documentos | .pdf, .txt, .zip | application/* |
 
-### Servicios REST
+### Endpoints REST
 
-El servidor expone los siguientes endpoints REST:
+| Endpoint | Método | Descripción | Ejemplo |
+|----------|--------|-------------|---------|
+| `/api/hello` | GET | Saludo personalizado | `/api/hello?name=Diego` |
+| `/api/weather` | GET | Clima simulado de Bogotá | Respuesta JSON con temperatura |
+| `/api/quote` | GET | Cita inspiradora aleatoria | Respuesta JSON con cita |
 
-- **GET /api/hello?name={nombre}**: Servicio de saludo personalizado
-- **GET /api/weather**: Información simulada del clima de Bogotá
-- **GET /api/quote**: Cita inspiradora aleatoria simulada
+### Demo Web
 
-### Aplicación Web de Demostración
+La aplicación incluye una interfaz completa con:
+- Formularios interactivos para probar APIs
+- Comunicación asíncrona con JavaScript
+- Interfaz responsiva con CSS moderno
+- Manejo de estados de carga y errores
 
-La aplicación incluye:
+## 🧪 Pruebas
 
-- **Formularios de prueba**: GET y POST requests con comunicación asíncrona
-- **Integración con servicios REST**: Ejemplos de llamadas a APIs simuladas
-- **Interfaz moderna**: CSS responsivo con efectos visuales
-- **Manejo de errores**: Gestión de estados de carga y errores de red
-
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
-
-### Prerequisites
-
-The requirements for running the project.
-
-- Java 21
-- Maven 3.6+
-
-### Installing
-
-To install the project
-A step by step series of examples that tell you how to get a development env running
-Say what the step will be
-1. Clone the repository
-2. Navigate to the project directory
-3. Build the project using Maven
-
-Give the example
-```
-git clone https://github.com/diegcard/Arep_Taller_1.git
-cd Arep_Taller_1
-mvn clean install
-```
-
-## Running the tests
-
-To run the tests, you can use the following Maven command:
-
-```
+```bash
+# Ejecutar todas las pruebas
 mvn test
+
+# Generar reporte de cobertura
+mvn jacoco:report
 ```
 
-### Break down into end to end tests
+Las pruebas incluyen:
+- Pruebas unitarias del servidor HTTP
+- Validación de tipos MIME
+- Pruebas de endpoints REST
+- Manejo de errores y casos límite
 
-Explain what these tests test and why
-
-```
-Give an example
-```
-
-### And coding style tests
-
-Explain what these tests test and why
+## 📦 Estructura del Proyecto
 
 ```
-Give an example
+src/
+├── main/java/com/escuelaing/arep/
+│   └── HttpServer.java           # Servidor principal
+├── main/resources/static/
+│   ├── index.html               # Página principal
+│   ├── styles.css               # Estilos
+│   ├── app.js                   # Lógica del cliente
+│   └── logo.svg                 # Logo de la aplicación
+└── test/java/com/escuelaing/arep/
+    └── HttpServerTest.java      # Pruebas unitarias
 ```
 
-## Deployment
+## 🛠️ Tecnologías
 
-Add additional notes about how to deploy this on a live system
+- **Java 21**: Lenguaje principal
+- **Maven**: Gestión de dependencias y construcción
+- **JUnit 5**: Framework de pruebas
+- **Vanilla JavaScript**: Frontend sin frameworks
+- **CSS3**: Estilos responsivos
 
-## Built With
+## 👨‍💻 Autor
 
-* [Dropwizard](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
-* [Maven](https://maven.apache.org/) - Dependency Management
-* [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds
-* [JUnit](https://junit.org/junit5/) - Testing framework
+**Diego Cardenas** - [diegcard](https://github.com/diegcard)
 
-## Versioning
+## 📄 Licencia
 
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags). 
+Este proyecto está bajo la Licencia MIT - ver [LICENSE.md](LICENSE.md) para detalles.
 
-## Authors
+---
 
-* **Diego Cardenas** - [diegcard](https://github.com/diegcard)
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
-
-## Acknowledgments
-
-* Hat tip to anyone whose code was used
-* Inspiration
-* etc
+**Escuela Colombiana de Ingeniería Julio Garavito**  
+**Arquitecturas Empresariales (AREP) - Taller 1**
