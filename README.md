@@ -1,147 +1,193 @@
-# Servidor HTTP - AREP Taller 1
+# HTTP Server - AREP Workshop 1
 
-Un servidor web HTTP implementado desde cero en Java puro, sin frameworks externos. Soporta archivos estáticos, servicios REST y manejo de múltiples tipos MIME.
+An HTTP web server implemented from scratch in pure Java, without external frameworks. It supports static files, REST services, and handling multiple MIME types.
 
-## 🎯 Características
+## 🎯 Features
 
-- ✅ Servidor HTTP completo sin dependencias externas
-- ✅ Soporte para archivos estáticos (HTML, CSS, JS, imágenes)
-- ✅ API REST con endpoints simulados
-- ✅ Cache de archivos en memoria
-- ✅ Detección automática de tipos MIME
-- ✅ Aplicación web de demostración
+- ✅ Complete HTTP server with no external dependencies
+- ✅ Support for static files (HTML, CSS, JS, images)
+- ✅ REST API with mock endpoints
+- ✅ In-memory file cache
+- ✅ Automatic MIME type detection
+- ✅ Demo web application
 
-## 🏗️ Arquitectura
+## 🏗️ Architecture
+
+![Architecture Diagram](img/diagram.png)
+
+### Main Class
+
+- **HttpServer** (`src/main/java/com/escuelaing/arep/HttpServer.java`): Main server that handles connections, routing, MIME types, and REST services
+
+## 📄 Project Structure
 
 ```
-Cliente (Navegador)
-       │ HTTP/1.1
-       ▼
-HttpServer (Puerto 35000)
-├── Servidor de Archivos Estáticos
-│   ├── HTML, CSS, JavaScript
-│   ├── Imágenes (PNG, JPG, SVG, etc.)
-│   └── Cache en memoria
-└── API REST
-    ├── /api/hello?name={nombre}
-    ├── /api/weather
-    └── /api/quote
+Arep_Taller_1/
+├── src/
+│   ├── main/
+│   │   ├── java/com/escuelaing/arep/
+│   │   │   └── HttpServer.java          # Main server implementation
+│   │   └── resources/
+│   │       └── static/                  # Static web files
+│   │           ├── index.html          # Main page
+│   │           ├── styles.css          # Styles
+│   │           ├── app.js              # Client-side logic
+│   │           └── logo.svg            # Application logo
+│   └── test/
+│       └── java/com/escuelaing/arep/
+│           └── HttpServerTest.java      # Unit tests
+├── target/                              # Maven build output
+├── pom.xml                             # Maven configuration
+├── README.md                           # This file
+├── LICENSE.md                          # MIT License
+└── diagram.png                         # Architecture diagram
 ```
 
-### Clase Principal
+## 🚀 Quick Start
 
-- **HttpServer** (`src/main/java/com/escuelaing/arep/HttpServer.java`): Servidor principal que maneja conexiones, enrutamiento, tipos MIME y servicios REST
-
-## 🚀 Inicio Rápido
-
-### Prerrequisitos
+### Prerequisites
 
 - Java 21+
 - Maven 3.6+
 
-### Instalación y Ejecución
+### Installation and Running
 
-1. **Clonar y compilar**:
-   ```bash
-   git clone https://github.com/diegcard/Arep_Taller_1.git
-   cd Arep_Taller_1
-   mvn clean compile
-   ```
+1. **Clone and compile**:
 
-2. **Ejecutar servidor**:
-   ```bash
-   # Opción recomendada
-   mvn exec:java -Dexec.mainClass="com.escuelaing.arep.HttpServer"
-   
-   # Alternativas
-   java -cp target/classes com.escuelaing.arep.HttpServer
-   java -cp target/urlobject-1.0-SNAPSHOT.jar com.escuelaing.arep.HttpServer
-   ```
+```bash
+git clone https://github.com/diegcard/Arep_Taller_1.git
+cd Arep_Taller_1
+mvn clean compile
+```
 
-3. **Acceder a la aplicación**:
-   ```
-   http://localhost:35000
-   ```
+2. **Run server**:
 
-## 🌐 API y Funcionalidades
+```bash
+# Recommended option
+mvn exec:java -Dexec.mainClass="com.escuelaing.arep.HttpServer"
 
-### Archivos Estáticos
+# Alternatives
+java -cp target/classes com.escuelaing.arep.HttpServer
+java -cp target/urlobject-1.0-SNAPSHOT.jar com.escuelaing.arep.HttpServer
+```
 
-Soporta múltiples tipos de archivo con detección automática de MIME:
+3. **Access the application**:
 
-| Tipo | Extensiones | Content-Type |
+```
+http://localhost:35000
+```
+
+
+4. ### Stopping the Server
+- Press `Ctrl+C` in the terminal
+- The server will log shutdown information and close gracefully
+
+## 🌐 API and Features
+
+### Static Files
+
+Supports multiple File types with automatic MIME detection:
+
+| Type | Extensions | Content-Type |
 |------|-------------|--------------|
 | HTML | .html, .htm | text/html |
 | CSS | .css | text/css |
 | JavaScript | .js | application/javascript |
-| Imágenes | .png, .jpg, .gif, .svg, .ico, .webp | image/* |
-| Fuentes | .woff, .woff2, .ttf, .eot | font/* |
-| Documentos | .pdf, .txt, .zip | application/* |
+| Images | .png, .jpg, .gif, .svg, .ico, .webp | image/* |
+| Fonts | .woff, .woff2, .ttf, .eot | font/* |
+| Documents | .pdf, .txt, .zip | application/* |
 
-### Endpoints REST
+### REST Endpoints
 
-| Endpoint | Método | Descripción | Ejemplo |
+| Endpoint | Method | Description | Example |
 |----------|--------|-------------|---------|
-| `/api/hello` | GET | Saludo personalizado | `/api/hello?name=Diego` |
-| `/api/weather` | GET | Clima simulado de Bogotá | Respuesta JSON con temperatura |
-| `/api/quote` | GET | Cita inspiradora aleatoria | Respuesta JSON con cita |
+| `/api/hello` | GET | Custom greeting | `/api/hello?name=Diego` |
+| `/api/weather` | GET | Simulated Bogotá weather | JSON response with temperature |
+| `/api/quote` | GET | Random inspirational quote | JSON response with quote |
 
-### Demo Web
+### Server Configuration
+| Parameter | Value | Description |
+|-----------|-------|-------------|
+| Port | 35000 | Server listening port |
+| Static Files Directory | `src/main/resources/static` | Root directory for static files |
+| Connection Type | Sequential | Handles one request at a time |
 
-La aplicación incluye una interfaz completa con:
-- Formularios interactivos para probar APIs
-- Comunicación asíncrona con JavaScript
-- Interfaz responsiva con CSS moderno
-- Manejo de estados de carga y errores
 
-## 🧪 Pruebas
+### Web Demo
+
+The application includes a complete interface with:
+
+- Interactive forms for testing APIs
+- Asynchronous communication with JavaScript
+- Responsive interface with modern CSS
+- Loading state and error handling
+
+## 🧪 Tests
 
 ```bash
-# Ejecutar todas las pruebas
 mvn test
-
-# Generar reporte de cobertura
-mvn jacoco:report
 ```
 
-Las pruebas incluyen:
-- Pruebas unitarias del servidor HTTP
-- Validación de tipos MIME
-- Pruebas de endpoints REST
-- Manejo de errores y casos límite
+Results:
 
-## 📦 Estructura del Proyecto
+```bash
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.escuelaing.arep.HttpServerTest
+[INFO] Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.065 s - in com.escuelaing.arep.HttpServerTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 10, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  1.417 s
+[INFO] Finished at: 2025-08-18T19:17:43-05:00
+[INFO] ------------------------------------------------------------------------
+```
+
+Tests include:
+
+- HTTP server unit tests
+- MIME type validation
+- REST endpoint testing
+- Error and edge case handling
+
+## 📦 Project Structure
 
 ```
 src/
 ├── main/java/com/escuelaing/arep/
-│   └── HttpServer.java           # Servidor principal
+│ └── HttpServer.java # Main server
 ├── main/resources/static/
-│   ├── index.html               # Página principal
-│   ├── styles.css               # Estilos
-│   ├── app.js                   # Lógica del cliente
-│   └── logo.svg                 # Logo de la aplicación
+│ ├── index.html # Home Page
+│ ├── styles.css # Styles
+│ ├── app.js # Client-side Logic
+│ └── logo.svg # App Logo
 └── test/java/com/escuelaing/arep/
-    └── HttpServerTest.java      # Pruebas unitarias
+└── HttpServerTest.java # Unit Tests
 ```
 
-## 🛠️ Tecnologías
+## 🛠️ Technologies
 
-- **Java 21**: Lenguaje principal
-- **Maven**: Gestión de dependencias y construcción
-- **JUnit 5**: Framework de pruebas
-- **Vanilla JavaScript**: Frontend sin frameworks
-- **CSS3**: Estilos responsivos
+- **Java 21**: Core Language
+- **Maven**: Dependency Management and Building
+- **JUnit 5**: Testing Framework
+- **Vanilla JavaScript**: Framework-free Frontend
+- **CSS3**: Responsive Styles
 
-## 👨‍💻 Autor
+## 👨‍💻 Author
 
 **Diego Cardenas** - [diegcard](https://github.com/diegcard)
 
-## 📄 Licencia
+## 📄 License
 
-Este proyecto está bajo la Licencia MIT - ver [LICENSE.md](LICENSE.md) para detalles.
+This project is licensed under the MIT License - see [LICENSE.md](LICENSE.md) for details.
 
 ---
 
-**Escuela Colombiana de Ingeniería Julio Garavito**  
-**Arquitecturas Empresariales (AREP) - Taller 1**
+**Julio Garavito Colombian School of Engineering**
+**Enterprise Architectures (AREP) - Workshop 1**
